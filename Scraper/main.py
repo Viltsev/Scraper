@@ -8,16 +8,10 @@ import json
 import csv
 
 def mainScraper():
-    pagesAmount = 10
-    articleMainArray = []  # main array of the saved articles
     urls = []
     for item in range(1, 801):
-        # print(f"scraper working with the page #{item}")
         url = f"https://lifehacker.ru/topics/technology/?page={item}"
         urls.append(url)
-        # getData(url, articleMainArray)
-        # print(f"the {item} has been scrapped")
-        # print("----------------------------------------------------")
     amount = 0
     partial_getData = partial(getData, amount=amount)
     with Pool(10) as p:
@@ -119,25 +113,19 @@ def getData(url, amount):
 
 
 def merge():
-    # Указать путь к папке с JSON-файлами
     folder_path = 'data'
 
-    # Создать пустой список для хранения данных из JSON-файлов
     data_list = []
 
-    # Пройти по всем файлам в папке
     for filename in os.listdir(folder_path):
         if filename.endswith('.json'):
             file_path = os.path.join(folder_path, filename)
             with open(file_path, 'r', encoding='utf-8') as file:
-                # Прочитать JSON-файл и добавить его содержимое в список
                 data = json.load(file)
                 data_list.extend(data)
 
-    # Создать общий JSON-файл с объединенными данными
     output_json_path = 'main.json'
     with open(output_json_path, 'w', encoding='utf-8') as output_file:
-        # Записать весь список данных в общий JSON-файл
         json.dump(data_list, output_file, ensure_ascii=False, indent=4)
 
     print(f'Данные объединены и сохранены в файл {output_json_path}')
@@ -146,20 +134,6 @@ def merge():
 def main():
     #merge()
     mainScraper()
-
-def getCountPages():
-    folder_path = "data"  # Замените это на путь к вашей папке
-
-    # Получить список всех элементов в папке
-    files_and_directories = os.listdir(folder_path)
-
-    # Используйте списковое включение, чтобы отфильтровать только файлы
-    files = [f for f in files_and_directories if os.path.isfile(os.path.join(folder_path, f))]
-
-    # Теперь у вас есть список файлов, и вы можете получить количество файлов в нем
-    file_count = len(files)
-    return file_count
-
 
 if __name__ == "__main__":
     main()
